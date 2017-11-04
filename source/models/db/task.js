@@ -42,7 +42,17 @@ const Task = mongoose.model('Task', {
     lastExecution: {
         type: String,
         required: true
-    }
+	 },
+	executionTime: {
+		hour: {
+			type: Number,
+			required: true
+		},
+		minute: {
+			type: Number,
+			required: true
+		}
+	} 
 });
 
 module.exports = Task;
