@@ -44,7 +44,7 @@ function closeConnection (err) {
 }
 
 async function executeTask({id, from, amount, target}) {
-	let resultTransaction, targetCard, card = await mCards.get(from);
+	let data = target.number, resultTransaction, targetCard, card = await mCards.get(from);
 
 	if (!card) {
 		// если нет карты
@@ -60,12 +60,22 @@ async function executeTask({id, from, amount, target}) {
 
 	// если задача = перевод на карту, пополняем её
 	if (target.type === 'card2Card') {
-		targetCard = await mCards.get(type.number);
+		const num = parseInt(target.number, 10);
+		targetCard = await mCards.get(num);
 		if (!targetCard) {
 			// нет карты, принимающей средства
 			return;
 		}
-		await mCards.refill(type.number, amount);
+
+		data = targetCard.cardNumber;
+		// начисляем и создаем транзакцию
+		await mCards.refill(num, amount);
+		await mTrans.create({
+			cardId: num,
+			type: target.type,
+			data: card.cardNumber,
+			sum: amount.toString(10)
+		});
 	}
 
 	// списываем с карты сумму
@@ -75,7 +85,7 @@ async function executeTask({id, from, amount, target}) {
 	return mTrans.create({
 		cardId: from,
 		type: target.type,
-		data: target.number,
+		data: data,
 		sum: '-' + amount
 	}).then( _ => {
 		// помечаем задачу выполненной
