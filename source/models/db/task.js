@@ -41,7 +41,7 @@ const Task = mongoose.model('Task', {
     },
     lastExecution: {
         type: String,
-        required: true
+        required: false
 	 },
 	executionTime: {
 		hour: {

@@ -8,6 +8,7 @@
     "tls:generate": "scripts/tls/generate.sh",
     "start": "NODE_PATH=. node ./source/app.js",
     "start:https": "NODE_HTTPS=1 npm start",
+    "exec": "NODE_PATH=. node ./source/tasksExecutor.js",
     "watch": "NODE_PATH=. nodemon --watch source ./source/app.js",
     "test": "NODE_PATH=. jest"
   },

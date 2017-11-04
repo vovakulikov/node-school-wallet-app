@@ -10,16 +10,15 @@ class Tasks extends DbModel {
 	}
 
 	/**
-	 * Добавляет  задачу
+	 * Добавляет задачу
 	 *
-	 * @param {Object} card описание задачи
+	 * @param {Object} task описание задачи
 	 * @returns {Promise.<Object>}
 	 */
 	async create(task) {
 		if (task) {
 			const newTask = Object.assign({}, task, {
-				id: await this._generateId(),
-				
+				id: await this._generateId()
 			});
 
 			await this._insert(newTask);
@@ -53,39 +52,8 @@ class Tasks extends DbModel {
 	 *  Список невыполненных задач на сегодня, которые нужно сделать прямо сейчас
 	 */
 	async executionList() {
-		const today = new Date();
-		const list = await this.getListBy({
-			$and: [{ //  отобрать задачи 
-				$and: { // время выполнения которых уже наступило
-					'executionTime.hour': {
-						$lte: today.getHours()
-					},
-					'executionTime.minute': {
-						$lte: today.getMinutes()
-					}
-				}
-			}, {
-				$or: [{
-					period: { // число месяца = текущему числу
-						$eq: {
-							type: 'month',
-							value: today.getDate() + ''
-						}
-					}
-				}, {
-					period: { // или день недели = текущему дню недели
-						$eq: {
-							type: 'week',
-							value: today.getDay() + ''
-						}
-					}
-				}]
-			}, {
-				$ne: { // и сегодня еще не выполнялись
-					lastExecution: { $eq: dateString(today)}
-				}
-			}]
-		});
+		const filter = makeFilter();
+		const list = await this.getListBy(filter);
 		return list;
 	}
 }
@@ -94,9 +62,51 @@ module.exports = Tasks;
 
 function dateString(date) {
 	date = date || new Date();
-	const 
-		y = date.getFullYear(),
-		m = date.getMonth() + 1,
-		d = date.getDate();
+	const y = date.getFullYear();
+	const m = date.getMonth() + 1;
+	const d = date.getDate();
 	return `${y}-${m}-${d}`;
+}
+
+function makeFilter() {
+	const now = new Date();
+	return {
+		$and: [{ // отобрать задачи
+			$or: [{ // час выполнения которых меньше чем текущий
+				'executionTime.hour': {
+					$lt: now.getHours()
+				}
+			}, {
+				$and: [{ // или час такой же
+					'executionTime.hour': {
+						$eq: now.getHours()
+					}
+				}, { // но минут меньше
+					'executionTime.minute': {
+						$lte: now.getMinutes()
+					}
+				}]
+			}]
+		}, {
+			$or: [{
+				period: { // число месяца = текущему числу
+					$eq: {
+						type: 'month',
+						value: now.getDate().toString(10)
+					}
+				}
+			}, {
+				period: { // или день недели = текущему дню недели
+					$eq: {
+						type: 'week',
+						value: now.getDay().toString(10)
+					}
+				}
+			}]
+		}, {
+			lastExecution: { // и сегодня еще не выполнялись
+				$ne: dateString(now)
+			}
+		}]
+	};
 }
