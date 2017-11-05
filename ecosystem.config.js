@@ -3,9 +3,6 @@ module.exports = {
 		{
 			name: 'node-school-app',
 			script: 'source/app.js',
-			instance_var: 'INSTANCE_ID',
-			exec_mode: 'cluster',
-			instances: 2,
 			env: {
 				NODE_PATH: '.'
 			},
@@ -14,6 +11,13 @@ module.exports = {
 			},
 			env_production: {
 				NODE_ENV: 'production'
+			}
+		},
+		{
+			name: 'node-school-task',
+			script: 'source/tasksExecutor.js',
+			env: {
+				NODE_PATH: '.'
 			}
 		}
 	]
