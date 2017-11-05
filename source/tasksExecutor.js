@@ -1,5 +1,5 @@
 var crontab = require('node-crontab');
-var jobId = crontab.scheduleJob("*/1 * * * *", function(){
+var jobId = crontab.scheduleJob("*/5 * * * *", function(){
 
 	//This will call this function every 1 minute
 	//console.log("It's been 1 minute!");
