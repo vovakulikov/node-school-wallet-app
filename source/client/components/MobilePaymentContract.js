@@ -172,7 +172,7 @@ class MobilePaymentContract extends Component {
                         <InputCommision value={this.getSumWithCommission()}/>
                         <Currency>₽</Currency>
                     </InputField>
-                    <Commission>Размер коммиссии составляет {commission} ₽</Commission>
+                    <Commission>Размер комиссии составляет {commission} ₽</Commission>
                     <Underline/>
                     <PaymentButtonContainer>
                         <Button bgColor='#fff' textColor='#108051'>Заплатить</Button>
