@@ -103,10 +103,18 @@ const InputSum = styled(Input)`
 `;
 
 
-
 class TelephoneInput extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+    }
+
+    onChange(event){
+
+        const {onChange} = this.props;
+
+        if(onChange){
+            onChange(event);
+        }
     }
 
     render() {
@@ -114,7 +122,8 @@ class TelephoneInput extends Component {
             <InputField>
                 <Label>Номер телефона:</Label>
                 <SimpleInput
-                    name='taskLabel'/>
+                    name='targetNumber'
+                    onChange={(event) => this.onChange(event)}/>
             </InputField>
         )
     }
@@ -122,8 +131,18 @@ class TelephoneInput extends Component {
 
 
 class MonthDaySelect extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+    }
+
+    onChange(value) {
+
+        const {onChange} = this.props;
+
+        if (onChange) {
+
+            onChange(value);
+        }
     }
 
     render() {
@@ -142,8 +161,10 @@ class MonthDaySelect extends Component {
             <InputField>
                 <Label>Число:</Label>
                 <SimpleSelect
-                    name='targetType'
-                    defaultValue='1'>
+                    defaultValue='1'
+                    onChange={(value) => {
+                        this.onChange(value)
+                    }}>
                     {selectContent}
                 </SimpleSelect>
             </InputField>
@@ -153,8 +174,8 @@ class MonthDaySelect extends Component {
 
 
 class WeekDaySelect extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.weekdays = [
             {
                 value: 'mon',
@@ -187,15 +208,28 @@ class WeekDaySelect extends Component {
         ]
     }
 
+    onChange(value) {
+
+        const {onChange} = this.props;
+
+        if (onChange) {
+
+            onChange(value);
+        }
+    }
+
     render() {
 
         return (
             <InputField>
                 <Label>День недели:</Label>
                 <SimpleSelect
-                    name='targetType'
-                    defaultValue={this.weekdays[0].value}>
-                    {this.weekdays.map((weekday, index) => <Select.Option key={index} value={weekday.value}>{weekday.label}</Select.Option>)}
+                    defaultValue={this.weekdays[0].value}
+                    onChange={(value) => {
+                        this.onChange(value)
+                    }}>
+                    {this.weekdays.map((weekday, index) => <Select.Option key={index}
+                                                                          value={weekday.value}>{weekday.label}</Select.Option>)}
                 </SimpleSelect>
             </InputField>
         )
@@ -204,8 +238,20 @@ class WeekDaySelect extends Component {
 
 
 class TimesInput extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        this.executionTimeHour = 'executionTimeHour';
+        this.executionTimeMinute = 'executionTimeMinute';
+    }
+
+    onChange(name, value){
+
+        const {onChange} = this.props;
+
+        if(onChange) {
+            onChange(name, value);
+        }
     }
 
     render() {
@@ -233,7 +279,8 @@ class TimesInput extends Component {
                         <SecondLabel>час.</SecondLabel>
                         <TimeSelect
                             name='targetType'
-                            defaultValue='00'>
+                            defaultValue='00'
+                            onChange={(value)=>{this.onChange(this.executionTimeHour, value)}}>
                             {hourSelectContent}
                         </TimeSelect>
                     </TimeSelectContainer>
@@ -241,7 +288,8 @@ class TimesInput extends Component {
                         <SecondLabel>мин.</SecondLabel>
                         <TimeSelect
                             name='targetType'
-                            defaultValue='00'>
+                            defaultValue='00'
+                            onChange={(value)=>{this.onChange(this.executionTimeMinute, value)}}>
                             {minuteSelectContent}
                         </TimeSelect>
                     </TimeSelectContainer>
@@ -262,37 +310,46 @@ class TaskConstructor extends Component {
     constructor(props) {
         super(props);
 
-
         this.targetTypes = [
             {
                 type: 'card',
-                label: 'Баланс карты'
+                label: 'Баланс карты',
+                defaultNumber: this.props.inactiveCardsList[0] ? this.props.inactiveCardsList[0].id.toString() : ''
             },
             {
                 type: 'mobile',
-                label: 'Баланс мобильного телефона'
+                label: 'Баланс мобильного телефона',
+                defaultNumber: ''
             },
         ];
 
         this.periodTypes = [
             {
                 type: 'month',
-                label: 'Месяц'
+                label: 'Месяц',
+                defaultValue: '1'
             },
             {
                 type: 'week',
-                label: 'Неделю'
+                label: 'Неделю',
+                defaultValue: 'mon'
             },
         ];
 
 
-        this.state = {
-            sum: 0,
-            currentTargetType: this.targetTypes[0].type,
-            currentPeriodType: this.periodTypes[0].type,
+        this.defaultState = {
+            label: '',
+            targetType: this.targetTypes[0].type,
+            targetNumber: this.targetTypes[0].defaultNumber,
+            amount: '0',
+            periodType: this.periodTypes[0].type,
+            periodValue: this.periodTypes[0].defaultValue,
+            executionTimeHour: '00',
+            executionTimeMinute: '00'
         };
 
 
+        this.state = JSON.parse(JSON.stringify(this.defaultState));
     }
 
     /**
@@ -300,8 +357,15 @@ class TaskConstructor extends Component {
      *
      * @param {string} currentTargetType индекс выбранной карты
      */
-    onTargetTypeChange(currentTargetType) {
-        this.setState({currentTargetType});
+    onTargetTypeChange(newTargetType) {
+
+        let defaultTypeValue = this.targetTypes[0].defaultNumber;
+
+        if (newTargetType === this.targetTypes[1].type) {
+            defaultTypeValue = this.targetTypes[1].defaultNumber;
+        }
+
+        this.setState({targetType: newTargetType, targetNumber: defaultTypeValue});
     }
 
     /**
@@ -309,8 +373,37 @@ class TaskConstructor extends Component {
      *
      * @param {string} currentPeriodType индекс выбранной карты
      */
-    onPeriodTypeChange(currentPeriodType) {
-        this.setState({currentPeriodType});
+    onPeriodTypeChange(newPeriodType) {
+
+        let defaultPeriodValue = this.periodTypes[0].defaultValue;
+
+        if (newPeriodType === this.periodTypes[1].type) {
+            defaultPeriodValue = this.periodTypes[1].defaultValue;
+        }
+
+        this.setState({periodType: newPeriodType, periodValue: defaultPeriodValue});
+    }
+
+    /**
+     * Обработчик переключения типа задачи
+     *
+     * @param {string} currentPeriodType индекс выбранной карты
+     */
+    onPeriodValueChange(newPeriodType) {
+
+        this.setState({periodValue: newPeriodType});
+    }
+
+    /**
+     * Обработчик переключения типа задачи
+     *
+     * @param {string} currentIndex индекс выбранной карты
+     */
+    onCardChange(currentIndex) {
+
+        const targetCard = this.props.inactiveCardsList.find((card, index) => +index === +currentIndex);
+
+        this.setState({targetNumber: targetCard.id.toString()});
     }
 
     /**
@@ -330,6 +423,15 @@ class TaskConstructor extends Component {
     }
 
     /**
+     * Обработчик переключения карты
+     *
+     * @param {Number} activeCardIndex индекс выбранной карты
+     */
+    onSelectChange(name, value) {
+        this.setState({[name]: value});
+    }
+
+    /**
      * Отправка формы
      * @param {Event} event событие отправки формы
      */
@@ -338,18 +440,35 @@ class TaskConstructor extends Component {
             event.preventDefault();
         }
 
-        const {sum, phoneNumber, commission} = this.state;
+        const taskData = {
+            label: this.state.label,
+            from: this.props.activeCard.id.toString(),
+            target: {
+                type: this.state.targetType,
+                number: this.state.targetNumber
+            },
+            amount: this.state.amount,
+            period: {
+                type: this.state.periodType,
+                value: this.state.periodValue
+            },
+            executionTime: {
+                hour: this.state.executionTimeHour,
+                minute: this.state.executionTimeMinute
+            }
+        };
 
-        const isNumber = !isNaN(parseFloat(sum)) && isFinite(sum);
-        if (!isNumber || sum === 0) {
+        console.log(taskData);
+
+
+        const isNumber = !isNaN(parseFloat(taskData.amount)) && isFinite(taskData.amount);
+        if (!isNumber || taskData.amount === 0) {
             return;
         }
 
-        const {activeCard} = this.props;
-
         axios
-            .post(`/cards/${activeCard.id}/pay`, {phoneNumber, sum})
-            .then(() => this.props.onAddTaskSuccess({sum, phoneNumber, commission}));
+            .post(`/task/${taskData.id}`, taskData)
+            .then(() => this.props.onAddTaskSuccess({}));
     }
 
     /**
@@ -360,7 +479,7 @@ class TaskConstructor extends Component {
      */
     render() {
 
-        const {currentTargetType, currentPeriodType} = this.state;
+        const {label, targetType, targetNumber, amount, periodType, periodValue, executionTimeHour, executionTimeMinute} = this.state;
         const {inactiveCardsList} = this.props;
 
         return (
@@ -370,16 +489,15 @@ class TaskConstructor extends Component {
                     <Underline/>
                     <InputField>
                         <Label>Лэйбл:</Label>
-                        <SimpleInput
-                            name='taskLabel'/>
+                        <SimpleInput name='label'
+                                     onChange={(event) => this.onChangeInputValue(event)}/>
                     </InputField>
                     <Underline/>
                     <InputField>
                         <Label>Пополнить:</Label>
                         <SimpleSelect
-                            name='targetType'
-                            defaultValue={currentTargetType}
-                            onChange={(currentTargetType) => this.onTargetTypeChange(currentTargetType)}>
+                            defaultValue={targetType}
+                            onChange={(targetType) => this.onTargetTypeChange(targetType)}>
                             {this.targetTypes.map((targetType, index) => (
                                 <Select.Option key={index} value={`${targetType.type}`}>
                                     {targetType.label}
@@ -387,25 +505,30 @@ class TaskConstructor extends Component {
                             ))}
                         </SimpleSelect>
                     </InputField>
-                    {this.state.currentTargetType === this.targetTypes[0].type
-                        ? <CardContainer><Card type='select' data={inactiveCardsList}/></CardContainer>
-                        : <TelephoneInput/>}
+                    {this.state.targetType === this.targetTypes[0].type
+                        ? <CardContainer>
+                            <Card type='select'
+                                  data={inactiveCardsList}
+                                  onCardChange={(value) => {
+                                      this.onCardChange(value)
+                                  }}/>
+                        </CardContainer>
+                        : <TelephoneInput
+                            onChange={(event) => this.onChangeInputValue(event)}/>}
                     <InputField>
                         <Label>На сумму:</Label>
                         <InputWithSecondLabelContainer>
                             <Currency>₽</Currency>
                             <InputSum
-                                name='sum'
-                                value={this.state.sum}
+                                name='amount'
                                 onChange={(event) => this.onChangeInputValue(event)}/>
                         </InputWithSecondLabelContainer>
                     </InputField>
                     <InputField>
                         <Label>Один раз в:</Label>
                         <SimpleSelect
-                            name='periodType'
-                            defaultValue={currentPeriodType}
-                            onChange={(currentPeriodType) => this.onPeriodTypeChange(currentPeriodType)}>
+                            defaultValue={periodType}
+                            onChange={(periodType) => this.onPeriodTypeChange(periodType)}>
                             {this.periodTypes.map((periodType, index) => (
                                 <Select.Option key={index} value={`${periodType.type}`}>
                                     {periodType.label}
@@ -413,10 +536,15 @@ class TaskConstructor extends Component {
                             ))}
                         </SimpleSelect>
                     </InputField>
-                    {this.state.currentPeriodType === this.periodTypes[0].type
-                        ? <MonthDaySelect/>
-                        : <WeekDaySelect/>}
-                    <TimesInput/>
+                    {this.state.periodType === this.periodTypes[0].type
+                        ? <MonthDaySelect onChange={(value) => {
+                            this.onPeriodValueChange(value)
+                        }}/>
+                        : <WeekDaySelect onChange={(value) => {
+                            this.onPeriodValueChange(value)
+                        }}/>}
+                    <TimesInput
+                        onChange={(name, value)=>{this.onSelectChange(name, value)}}/>
                     <Underline/>
                     <PaymentButton bgColor='#fff' textColor='#108051'>Добавить</PaymentButton>
                 </form>

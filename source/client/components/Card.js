@@ -76,7 +76,15 @@ class Card extends Component {
 	 * @param {Number} activeCardIndex индекс выбранной карты
 	 */
 	onCardChange(activeCardIndex) {
+
+		const {onCardChange} = this.props;
+
 		this.setState({activeCardIndex});
+
+		if(onCardChange) {
+
+            onCardChange(activeCardIndex);
+		}
 	}
 
 	/**
@@ -143,7 +151,8 @@ Card.propTypes = {
 	isSingle: PropTypes.bool,
 	isCardsEditable: PropTypes.bool,
 	onClick: PropTypes.func,
-	onChangeBarMode: PropTypes.func
+	onChangeBarMode: PropTypes.func,
+	onCardChange: PropTypes.func
 };
 
 export default Card;
