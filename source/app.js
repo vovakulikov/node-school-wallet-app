@@ -17,6 +17,9 @@ const {renderToStaticMarkup} = require('react-dom/server');
 const getCardsController = require('./controllers/cards/get-cards');
 const createCardController = require('./controllers/cards/create');
 const deleteCardController = require('./controllers/cards/delete');
+const getMobileController = require('./controllers/mobile/get-list');
+const createMobileController = require('./controllers/mobile/create');
+const deleteMobileController = require('./controllers/mobile/delete');
 const getTransactionController = require('./controllers/transactions/get');
 const createTransactionsController = require('./controllers/transactions/create');
 const cardToCard = require('./controllers/cards/card-to-card');
@@ -53,12 +56,16 @@ async function getData(ctx) {
 		name: 'Samuel Johnson'
 	};
 	const cards = await ctx.cardsModel.getAll();
+	const mobile = await ctx.mobileModel.getAll();
 	const transactions = await ctx.transactionsModel.getAll();
+	const tasks = await ctx.tasksModel.getAll();
 
 	return {
 		user,
 		cards,
-		transactions
+		mobile,
+		transactions,
+		tasks
 	};
 }
 
@@ -76,6 +83,10 @@ router.get('/', async (ctx) => {
 router.get('/cards/', getCardsController);
 router.post('/cards/', createCardController);
 router.delete('/cards/:id', deleteCardController);
+
+router.get('/mobile/', getMobileController);
+router.post('/mobile/', createMobileController);
+router.delete('/mobile/:id', deleteMobileController);
 
 router.get('/cards/:id/transactions/', getTransactionController);
 router.post('/cards/:id/transactions/', createTransactionsController);
@@ -114,6 +125,7 @@ app.use(async (ctx, next) => {
 // Создадим модель Cards и Transactions на уровне приложения и проинициализируем ее
 app.use(async (ctx, next) => {
 	ctx.cardsModel = new CardsModel();
+	ctx.mobileModel = new MobileModel();
 	ctx.transactionsModel = new TransactionsModel();
 	ctx.tasksModel = new TasksModel();
 
