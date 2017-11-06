@@ -6,7 +6,6 @@ import axios from 'axios';
 import {Island, Title, Button, Input} from './';
 
 const MobilePaymentLayout = styled(Island)`
-	width: 440px;
 	background: #108051;
 `;
 
@@ -175,7 +174,7 @@ class MobilePaymentContract extends Component {
                     <Commission>Размер коммиссии составляет {commission} ₽</Commission>
                     <Underline/>
                     <PaymentButtonContainer>
-                        <Button bgColor='#fff' textColor='#108051'>Заплатить</Button>
+                        <Button bgColor='#fff' textColor='#108051'>Пополнить</Button>
                     </PaymentButtonContainer>
                 </form>
             </MobilePaymentLayout>

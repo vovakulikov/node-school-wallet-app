@@ -5,12 +5,11 @@ import axios from 'axios';
 
 import {Island, Title, Button, Input, Select, Card} from './';
 
-const MobilePaymentLayout = styled(Island)`
-	width: 440px;
-	background: #108051;
+const TaskConstructorLayout = styled(Island)`
+	background: #105380;
 `;
 
-const MobilePaymentTitle = styled(Title)`
+const TaskConstructorTitle = styled(Title)`
 	color: #fff;
 `;
 
@@ -262,7 +261,7 @@ class TimesInput extends Component {
 
         for (let i = 0; i <= 60; i++) {
 
-            const value = i > 10 ? i : '0' + i;
+            const value = i > 9 ? i : '0' + i;
 
             if (i < 25) {
                 hourSelectContent.push(<Select.Option key={i} value={value.toString()}>{value}</Select.Option>)
@@ -316,14 +315,14 @@ class TaskConstructor extends Component {
 
         this.targetTypes = [
             {
-                type: 'card2Card',
-                label: 'Баланс карты',
-                defaultNumber: this.props.inactiveCardsList[0] ? this.props.inactiveCardsList[0].id.toString() : ''
-            },
-            {
                 type: 'paymentMobile',
                 label: 'Баланс мобильного телефона',
                 defaultNumber: ''
+            },
+            {
+                type: 'card2Card',
+                label: 'Баланс карты',
+                defaultNumber: this.props.inactiveCardsList[0] ? this.props.inactiveCardsList[0].id.toString() : ''
             },
         ];
 
@@ -339,7 +338,6 @@ class TaskConstructor extends Component {
                 defaultValue: 'mon'
             },
         ];
-
 
         this.defaultState = {
             label: '',
@@ -478,6 +476,8 @@ class TaskConstructor extends Component {
             }
         }
 
+        // this.props.onAddTaskSuccess(taskData);
+
         axios
             .post(`/cards/${taskData.from}/tasks`, taskData)
             .then((response) => {
@@ -497,9 +497,9 @@ class TaskConstructor extends Component {
         const {inactiveCardsList} = this.props;
 
         return (
-            <MobilePaymentLayout>
+            <TaskConstructorLayout>
                 <form onSubmit={(event) => this.onSubmitForm(event)}>
-                    <MobilePaymentTitle>Добавить задачу</MobilePaymentTitle>
+                    <TaskConstructorTitle>Добавить задачу</TaskConstructorTitle>
                     <Underline/>
                     <InputField>
                         <Label>Лэйбл:</Label>
@@ -519,7 +519,7 @@ class TaskConstructor extends Component {
                             ))}
                         </SimpleSelect>
                     </InputField>
-                    {this.state.targetType === this.targetTypes[0].type
+                    {this.state.targetType === this.targetTypes[1].type
                         ? <CardContainer>
                             <Card type='select'
                                   data={inactiveCardsList}
@@ -563,10 +563,10 @@ class TaskConstructor extends Component {
                         }}/>
                     <Underline/>
                     <TaskAddButtonContainer>
-                        <Button bgColor='#fff' textColor='#108051'>Добавить</Button>
+                        <Button bgColor='#fff' textColor='#105380'>Добавить</Button>
                     </TaskAddButtonContainer>
                 </form>
-            </MobilePaymentLayout>
+            </TaskConstructorLayout>
         );
     }
 }

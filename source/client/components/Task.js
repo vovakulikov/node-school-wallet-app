@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import TaskConstructor from './TaskConstructor';
-import TaskSuccessApply from './TaskSuccessApply';
+import AddTaskSuccess from './TaskSuccess';
 
 import {Container50Percent} from './';
 
@@ -74,8 +74,9 @@ class Task extends Component {
 
             return (
                 <Container50Percent>
-                    <TaskSuccessApply
+                    <AddTaskSuccess
                         newTask={this.state.task}
+                        inactiveCardsList={inactiveCardsList}
                         repeatAddTask={() => this.repeatAddTask()}/>
                 </Container50Percent>
             );

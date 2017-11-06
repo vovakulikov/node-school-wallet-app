@@ -219,12 +219,18 @@ class App extends Component {
                     <Header activeCard={activeCard}/>
                     <Workspace>
                         <History cardHistory={filteredHistory}/>
-                        <TaskList cardTasks={filteredTasks}/>
+                        <TaskList
+                            inactiveCardsList={inactiveCardsList}
+                            cardTasks={filteredTasks}/>
                         <Prepaid
                             activeCard={activeCard}
                             inactiveCardsList={inactiveCardsList}
                             onCardChange={(newActiveCardIndex) => this.onCardChange(newActiveCardIndex)}
                             onTransaction={() => this.onTransaction()}/>
+                        <Task
+                            activeCard={activeCard}
+                            inactiveCardsList={inactiveCardsList}
+                            onTask={() => this.onTask()}/>
                         <MobilePayment
                             activeCard={activeCard}
                             onTransaction={() => this.onTransaction()}/>
@@ -232,10 +238,6 @@ class App extends Component {
                             activeCard={activeCard}
                             inactiveCardsList={inactiveCardsList}
                             onTransaction={() => this.onTransaction()}/>
-                        <Task
-                            activeCard={activeCard}
-                            inactiveCardsList={inactiveCardsList}
-                            onTask={() => this.onTask()}/>
                     </Workspace>
                 </CardPane>
             </Wallet>

@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'emotion/react';
-import moment from 'moment';
 
 import {Island, Container50Percent} from './';
 
-const HistoryLayout = styled(Island)`
+const TaskListLayout = styled(Island)`
 	height: 400px;
 	overflow-y: scroll;
 	padding: 0;
@@ -14,11 +13,11 @@ const HistoryLayout = styled(Island)`
 	flex-direction: column;
 `;
 
-const HistoryEmpty = styled.div`
+const TaskListEmpty = styled.div`
 	margin: 10px 0 10px 12px;
 `;
 
-const HistoryTitle = styled.div`
+const TaskListTitle = styled.div`
 	padding-left: 12px;
 	color: rgba(0, 0, 0, 0.4);
 	font-size: 15px;
@@ -26,14 +25,14 @@ const HistoryTitle = styled.div`
 	text-transform: uppercase;
 `;
 
-const HistoryContent = styled.div`
+const TaskListContent = styled.div`
 	color: rgba(0, 0, 0, 0.4);
 	font-size: 15px;
 	line-height: 30px;
 	text-transform: uppercase;
 `;
 
-const HistoryItem = styled.div`
+const TaskItem = styled.div`
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
@@ -51,101 +50,126 @@ const HistoryItem = styled.div`
 	}
 `;
 
-const HistoryItemIcon = styled.div`
-	width: 50px;
-	height: 50px;
-	border-radius: 25px;
-	background-color: #159761;
-	background-image: url(${({bankSmLogoUrl}) => bankSmLogoUrl});
-	background-size: contain;
-	background-repeat: no-repeat;
-`;
-
-const HistoryItemTitle = styled.div`
-	width: 290px;
+const TaskItemTitle = styled.div`
+    width: 220px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 `;
 
-const HistoryItemTime = styled.div`
+const TaskIconContainer = styled.div`
 	width: 50px;
+	height: 50px;
+	background-color: #105380;
+	border-radius: 50%;
 `;
 
-const HistoryItemSum = styled.div`
-	width: 50px;
+
+const TaskIcon = styled.div`
+	width: 44px;
+	height: 44px;
+	background-image: url(/assets/round-check.svg);
+	background-size: contain;
+    background-repeat: no-repeat;
+    margin: 3px auto;
+`;
+
+const TaskItemPeriod = styled.div`
+	width: 105px;
+`;
+
+const TaskItemAmount = styled.div`
+	min-width: 60px;
+	max-width: 150px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	font-weight: bold;
 `;
 
-const History = ({cardTasks}) => {
+const TaskList = ({cardTasks, inactiveCardsList}) => {
 
-    /*<HistoryItemIcon bankSmLogoUrl={item.card.theme.bankSmLogoUrl}/>
-                            <HistoryItemTitle>
-                                {getTaskItemTitle(item)}
-                            </HistoryItemTitle>
-                            <HistoryItemTime>
-                                {historyItemDate.format('HH:mm')}
-                            </HistoryItemTime>
-                            <HistoryItemSum>
-                                {`${item.sum} ₽`}
-                            </HistoryItemSum>*/
+    const getTaskItemTitle = (taskItem) => {
 
+        if (!taskItem.label) {
 
-    const getTaskItemTitle = (item) => {
-        let typeTitle = item.label || '';
+            let type = 'Задача';
+            let number = 'Цель';
 
-        if (!typeTitle) {
-            switch (item.target.type) {
+            switch (taskItem.target.type) {
                 case 'paymentMobile': {
-                    typeTitle = 'Оплата телефона';
+                    type = 'Телефон';
+                    number = taskItem.target.number;
                     break;
                 }
                 case 'prepaidCard': {
-                    typeTitle = 'Пополнение с карты';
+                    type = 'Пополнение';
                     break;
                 }
                 case 'card2Card': {
-                    typeTitle = 'Перевод на карту';
+                    type = 'Карта';
+
+                    const targetCard = inactiveCardsList.find((card) => +card.id === +taskItem.target.number);
+
+                    number = targetCard.number;
                     break;
                 }
-                default: {
-                    typeTitle = 'Операция';
-                }
             }
+
+            return `${type}: ${number}`;
+
         }
 
-        return `${typeTitle}: ${item.target.number}`;
+        return taskItem.label;
     };
+
+
+    const getTaskItemPeriod = (taskItem) => {
+
+        const hour = taskItem.executionTime.hour > 9 ? taskItem.executionTime.hour : '0' + taskItem.executionTime.hour;
+        const minute = taskItem.executionTime.minute > 9 ? taskItem.executionTime.minute : '0' + taskItem.executionTime.minute;
+
+
+        return `${taskItem.period.type[0].toUpperCase()}-${taskItem.period.value} | ${hour}:${minute}`
+    };
+
 
     const getContent = (list) => {
 
         const content = list.map((item, index) => {
 
-                return (<HistoryItem key={index}>
-                            <HistoryItemTitle>
-                                {getTaskItemTitle(item)}
-                            </HistoryItemTitle>
-                        </HistoryItem>);
+            return (<TaskItem key={index}>
+                <TaskIconContainer>
+                    <TaskIcon/>
+                </TaskIconContainer>
+                <TaskItemTitle>
+                    {getTaskItemTitle(item)}
+                </TaskItemTitle>
+                <TaskItemPeriod>
+                    {getTaskItemPeriod(item)}
+                </TaskItemPeriod>
+                <TaskItemAmount>
+                    {`+${item.amount} ₽`}
+                </TaskItemAmount>
+            </TaskItem>);
         });
 
         return content.length === 0
-            ? <HistoryContent><HistoryEmpty>Нет ниодной добавленной задачи</HistoryEmpty></HistoryContent>
-            : <HistoryContent>{content}</HistoryContent>;
+            ? <TaskListContent><TaskListEmpty>Список задач пуст</TaskListEmpty></TaskListContent>
+            : <TaskListContent>{content}</TaskListContent>;
     };
 
     return (
         <Container50Percent>
-            <HistoryLayout>
-                <HistoryTitle>Добавленные задачи:</HistoryTitle>
+            <TaskListLayout>
+                <TaskListTitle>Добавленные задачи:</TaskListTitle>
                 {getContent(cardTasks)}
-            </HistoryLayout>
+            </TaskListLayout>
         </Container50Percent>
     );
 };
 
-History.propTypes = {
-    cardTasks: PropTypes.arrayOf(PropTypes.object).isRequired
+TaskList.propTypes = {
+    cardTasks: PropTypes.arrayOf(PropTypes.object).isRequired,
+    inactiveCardsList: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
-export default History;
+export default TaskList;

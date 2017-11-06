@@ -10,7 +10,6 @@ const WithdrawTitle = styled(Title)`
 `;
 
 const WithdrawLayout = styled(Island)`
-	width: 440px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
