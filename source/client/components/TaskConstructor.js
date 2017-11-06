@@ -262,7 +262,7 @@ class TimesInput extends Component {
 
         for (let i = 0; i <= 60; i++) {
 
-            const value = i > 10 ? i : '0' + i;
+            const value = i > 9 ? i : '0' + i;
 
             if (i < 25) {
                 hourSelectContent.push(<Select.Option key={i} value={value.toString()}>{value}</Select.Option>)
