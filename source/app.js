@@ -31,41 +31,44 @@ const TransactionsModel = require('source/models/transactions');
 const getTransactionsController = require('./controllers/transactions/get-transactions');
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/school-wallet', { useMongoClient: true });
+
+mongoose.connect('mongodb://localhost/school-wallet', {useMongoClient: true});
 mongoose.Promise = global.Promise;
 
 const app = new Koa();
+const botConnection = require('./telegram-bot/models/botConnectModel');
+
 
 function getView(viewId) {
-	const viewPath = path.resolve(__dirname, 'views', `${viewId}.server.js`);
-	delete require.cache[require.resolve(viewPath)];
-	return require(viewPath);
+  const viewPath = path.resolve(__dirname, 'views', `${viewId}.server.js`);
+  delete require.cache[require.resolve(viewPath)];
+  return require(viewPath);
 }
 
 async function getData(ctx) {
-	const user = {
-		login: 'samuel_johnson',
-		name: 'Samuel Johnson'
-	};
-	const cards = await ctx.cardsModel.getAll();
-	const transactions = await ctx.transactionsModel.getAll();
+  const user = {
+    login: 'samuel_johnson',
+    name: 'Samuel Johnson'
+  };
+  const cards = await ctx.cardsModel.getAll();
+  const transactions = await ctx.transactionsModel.getAll();
 
-	return {
-		user,
-		cards,
-		transactions
-	};
+  return {
+    user,
+    cards,
+    transactions
+  };
 }
 
 // Сохраним параметр id в ctx.params.id
 router.param('id', (id, ctx, next) => next());
 
 router.get('/', async (ctx) => {
-	const data = await getData(ctx);
-	const indexView = getView('index');
-	const indexViewHtml = renderToStaticMarkup(indexView(data));
+  const data = await getData(ctx);
+  const indexView = getView('index');
+  const indexViewHtml = renderToStaticMarkup(indexView(data));
 
-	ctx.body = indexViewHtml;
+  ctx.body = indexViewHtml;
 });
 
 router.get('/cards/', getCardsController);
@@ -85,61 +88,66 @@ router.all('/error', errorController);
 
 // logger
 app.use(async (ctx, next) => {
-	const start = new Date();
-	await next();
-	const ms = new Date() - start;
-	logger.info(`${ctx.method} ${ctx.url} - ${ms}ms`);
+  const start = new Date();
+  await next();
+  const ms = new Date() - start;
+  logger.info(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
 // error handler
 app.use(async (ctx, next) => {
-	try {
-		await next();
-	} catch (err) {
-		logger.error('Error detected', err);
-		ctx.status = err instanceof ApplicationError ? err.status : 500;
-		ctx.body = `Error [${err.message}] :(`;
-	}
+  try {
+    await next();
+  } catch (err) {
+    logger.error('Error detected', err);
+    ctx.status = err instanceof ApplicationError ? err.status : 500;
+    ctx.body = `Error [${err.message}] :(`;
+  }
 });
 
 // Создадим модель Cards и Transactions на уровне приложения и проинициализируем ее
 app.use(async (ctx, next) => {
-	ctx.cardsModel = new CardsModel();
-	ctx.transactionsModel = new TransactionsModel();
+  ctx.cardsModel = new CardsModel();
+  ctx.transactionsModel = new TransactionsModel();
+  // ctx.bot = new
 
-	await next();
+  await next();
 });
 
+app.use(async (ctx, next) => {
+  ctx.bot = botConnection;
+
+  await next();
+});
 
 app.use(bodyParser);
 app.use(router.routes());
 app.use(serve('./public'));
 
-const listenCallback = function() {
-	const {
-		port
-	} = this.address();
+const listenCallback = function () {
+  const {
+    port
+  } = this.address();
 
-	logger.info(`Application started on ${port}`);
+  logger.info(`Application started on ${port}`);
 };
 
 const LISTEN_PORT = 3000;
 
 if (!module.parent && process.env.NODE_HTTPS) {
-	const protocolSecrets = {
-		key: fs.readFileSync('fixtures/key.key'),
-		cert: fs.readFileSync('fixtures/cert.crt')
-	};
-
-	https
-		.createServer(protocolSecrets, app.callback())
-		.listen(LISTEN_PORT, listenCallback);
+  const protocolSecrets = {
+    key: fs.readFileSync('fixtures/key.key').toString(),
+    cert: fs.readFileSync('fixtures/cert.crt').toString(),
+  };
+  https
+    .createServer(protocolSecrets, app.callback())
+    .listen(LISTEN_PORT, listenCallback);
 }
 
 if (!module.parent && !process.env.NODE_HTTPS) {
-	http
-		.createServer(app.callback())
-		.listen(LISTEN_PORT, listenCallback);
+  http
+    .createServer(app.callback())
+    .listen(LISTEN_PORT, listenCallback);
 }
 
-module.exports = app;
+module.export = app;

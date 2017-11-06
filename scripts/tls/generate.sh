@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+!/usr/bin/bash
 
 KEYSTORE_DIR=fixtures
 
@@ -18,4 +18,4 @@ openssl req -new -sha256 -key $KEYSTORE_DIR/key.key -days 3650 -out $KEYSTORE_DI
 openssl x509 -req -days 3650 -in $KEYSTORE_DIR/csr.csr -signkey $KEYSTORE_DIR/key.key -out $KEYSTORE_DIR/cert.crt
 
 # Clean CSR
-rm -f $KEYSTORE_DIR/csr.csr
+# rm -f $KEYSTORE_DIR/csr.csr
