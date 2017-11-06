@@ -37,7 +37,8 @@ const Task = mongoose.model('Task', {
         }
     },
     createDate: {
-        type: String
+		  type: Date,
+		  default: Date.now
     },
     lastExecution: {
         type: String,
