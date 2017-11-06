@@ -5,12 +5,14 @@ import CardInfo from 'card-info';
 import axios from 'axios';
 
 import {
+
 	CardsBar,
 	Header,
 	History,
 	Prepaid,
 	MobilePayment,
-	Withdraw
+	Task,
+	Withdraw,
 } from './';
 
 import './fonts.css';
@@ -127,7 +129,7 @@ class App extends Component {
 	}
 
 	/**
-	* Функция вызывает при успешной транзакции
+	* Функция вызывается при успешной транзакции
 	*/
 	onTransaction() {
 		axios.get('/cards').then(({data}) => {
@@ -143,8 +145,8 @@ class App extends Component {
 
 	/**
 	 * Обработчик события переключения режима сайдбара
-	 * @param {String} mode Режим сайдбара
-	 * @param {String} index Индекс выбранной карты
+	 * @param {Object} event Режим сайдбара
+	 * @param {String} removeCardId Индекс выбранной карты
 	 */
 	onChangeBarMode(event, removeCardId) {
 		event.stopPropagation();
@@ -156,7 +158,7 @@ class App extends Component {
 
 	/**
 	 * Удаление карты
-	 * @param {Number} index Индекс карты
+	 * @param {Number} id - Индекс карты
 	 */
 	deleteCard(id) {
 		axios
@@ -204,8 +206,14 @@ class App extends Component {
 							inactiveCardsList={inactiveCardsList}
 							onCardChange={(newActiveCardIndex) => this.onCardChange(newActiveCardIndex)}
 							onTransaction={() => this.onTransaction()} />
-						<MobilePayment activeCard={activeCard} onTransaction={() => this.onTransaction()} />
+						<MobilePayment
+							activeCard={activeCard}
+							onTransaction={() => this.onTransaction()} />
 						<Withdraw
+							activeCard={activeCard}
+							inactiveCardsList={inactiveCardsList}
+							onTransaction={() => this.onTransaction()} />
+						<Task
 							activeCard={activeCard}
 							inactiveCardsList={inactiveCardsList}
 							onTransaction={() => this.onTransaction()} />
