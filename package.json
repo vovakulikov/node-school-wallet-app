@@ -9,7 +9,7 @@
     "start": "NODE_PATH=. node ./source/app.js",
     "start:secure": "NODE_ENV=secure npm start",
     "start:prod": "NODE_ENV=production npm start",
-    "exec": "NODE_PATH=. node ./source/tasksExecutor.js", 
+    "exec": "NODE_PATH=. node ./source/tasksExecutor.js",
     "watch": "NODE_PATH=. nodemon --watch source ./source/app.js",
     "test": "NODE_PATH=. jest"
   },
