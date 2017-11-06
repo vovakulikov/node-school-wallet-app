@@ -18,7 +18,7 @@ const Task = mongoose.model('Task', {
             required: true
         },
         number: {
-            type: Number,
+            type: String,
             required: true
         }
     },

@@ -22,12 +22,16 @@ const createTransactionsController = require('./controllers/transactions/create'
 const cardToCard = require('./controllers/cards/card-to-card');
 const cardToMobile = require('./controllers/cards/card-to-mobile');
 const mobileToCard = require('./controllers/cards/mobile-to-card');
+const getTasksController = require('./controllers/tasks/get');
+const deleteTaskController = require('./controllers/tasks/delete');
+const createTaskController = require('./controllers/tasks/create');
 
 const errorController = require('./controllers/error');
 
 const ApplicationError = require('libs/application-error');
 const CardsModel = require('source/models/cards');
 const TransactionsModel = require('source/models/transactions');
+const TasksModel = require('source/models/tasks');
 
 const getTransactionsController = require('./controllers/transactions/get-transactions');
 
@@ -76,6 +80,10 @@ router.delete('/cards/:id', deleteCardController);
 router.get('/cards/:id/transactions/', getTransactionController);
 router.post('/cards/:id/transactions/', createTransactionsController);
 
+router.get('/cards/:id/tasks/', getTasksController);
+router.post('/cards/:id/tasks/', createTaskController);
+router.delete('/tasks/:id', deleteTaskController);
+
 router.post('/cards/:id/transfer', cardToCard);
 router.post('/cards/:id/pay', cardToMobile);
 router.post('/cards/:id/fill', mobileToCard);
@@ -107,6 +115,7 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
 	ctx.cardsModel = new CardsModel();
 	ctx.transactionsModel = new TransactionsModel();
+	ctx.tasksModel = new TasksModel();
 
 	await next();
 });

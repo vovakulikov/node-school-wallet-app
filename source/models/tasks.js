@@ -41,6 +41,14 @@ class Tasks extends DbModel {
 	}
 
 	/**
+	 * Возвращает список задач по карте
+	 * @param {Number} id идентификатор карты
+	 */
+	async getByCard(id) {
+		return this.getListBy({from: id});
+	}
+
+	/**
 	 *  Отмечает задачу выполненной
 	 * @param {Number} id идентификатор задачи
 	 */
