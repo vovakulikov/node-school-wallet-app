@@ -15,4 +15,5 @@ export {default as History} from './History';
 export {default as TaskList} from './TaskList';
 export {default as Header} from './Header';
 export {default as UserInfo} from './UserInfo';
+export {default as Container50Percent} from './Container50Percent';
 export {default as App} from './App';

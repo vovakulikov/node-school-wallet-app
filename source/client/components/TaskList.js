@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import styled from 'emotion/react';
 import moment from 'moment';
 
-import {Island} from './';
+import {Island, Container50Percent} from './';
 
 const HistoryLayout = styled(Island)`
-	width: 530px;
-	max-height: 622px;
+	min-height: 400px;
 	overflow-y: scroll;
 	padding: 0;
 	background-color: rgba(0, 0, 0, 0.05);
@@ -134,10 +133,12 @@ const History = ({cardHistory}) => {
 	};
 
 	return (
-		<HistoryLayout>
-			<HistoryTitle>Запланированные задачи:</HistoryTitle>
-			{getContent(cardHistory)}
-		</HistoryLayout>
+		<Container50Percent>
+		    <HistoryLayout>
+		    	<HistoryTitle>Добавленные задачи:</HistoryTitle>
+		    	{getContent(cardHistory)}
+		    </HistoryLayout>
+		</Container50Percent>
 	);
 };
 

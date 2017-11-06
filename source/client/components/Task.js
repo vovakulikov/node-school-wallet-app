@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import TaskConstructor from './TaskConstructor';
 import TaskSuccessApply from './TaskSuccessApply';
 
+import {Container50Percent} from './';
+
 
 /**
  * строковые литералы кода
@@ -72,17 +74,21 @@ class Task extends Component {
         if (this.state.stage === CodeStrings.stateStages.success) {
 
             return (
-                <TaskSuccessApply
-                    newTask={this.state.task}
-                    repeatAddTask={() => this.repeatAddTask()} />
+                <Container50Percent>
+                    <TaskSuccessApply
+                        newTask={this.state.task}
+                        repeatAddTask={() => this.repeatAddTask()}/>
+                </Container50Percent>
             );
         }
 
         return (
-            <TaskConstructor
-                activeCard={activeCard}
-                inactiveCardsList={inactiveCardsList}
-                onAddTaskSuccess={(newTask) => this.onAddTaskSuccess(newTask)} />
+            <Container50Percent>
+                <TaskConstructor
+                    activeCard={activeCard}
+                    inactiveCardsList={inactiveCardsList}
+                    onAddTaskSuccess={(newTask) => this.onAddTaskSuccess(newTask)}/>
+            </Container50Percent>
         );
     }
 }

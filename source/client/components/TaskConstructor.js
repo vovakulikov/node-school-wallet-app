@@ -81,8 +81,8 @@ const Underline = styled.div`
 	background-color: rgba(0, 0, 0, 0.16);
 `;
 
-const PaymentButton = styled(Button)`
-	float: right;
+const TaskAddButtonContainer = styled.div`
+    text-align: right;
 `;
 
 const SimpleInput = styled(Input)`
@@ -553,7 +553,9 @@ class TaskConstructor extends Component {
                             this.onSelectChange(name, value)
                         }}/>
                     <Underline/>
-                    <PaymentButton bgColor='#fff' textColor='#108051'>Добавить</PaymentButton>
+                    <TaskAddButtonContainer>
+                        <Button bgColor='#fff' textColor='#108051'>Добавить</Button>
+                    </TaskAddButtonContainer>
                 </form>
             </MobilePaymentLayout>
         );

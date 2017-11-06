@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import styled from 'emotion/react';
 import moment from 'moment';
 
-import {Island} from './';
+import {Island, Container50Percent} from './';
 
 const HistoryLayout = styled(Island)`
-	width: 530px;
-	max-height: 622px;
+	min-height: 400px;
 	overflow-y: scroll;
 	padding: 0;
 	background-color: rgba(0, 0, 0, 0.05);
@@ -80,69 +79,71 @@ const HistoryItemSum = styled.div`
 `;
 
 const History = ({cardHistory}) => {
-	const getHistoryItemTitle = (item) => {
-		let typeTitle = '';
+    const getHistoryItemTitle = (item) => {
+        let typeTitle = '';
 
-		switch (item.type) {
-			case 'paymentMobile': {
-				typeTitle = 'Оплата телефона';
-				break;
-			}
-			case 'prepaidCard': {
-				typeTitle = 'Пополнение с карты';
-				break;
-			}
-			case 'withdrawCard': {
-				typeTitle = 'Перевод на карту';
-				break;
-			}
-			default: {
-				typeTitle = 'Операция';
-			}
-		}
+        switch (item.type) {
+            case 'paymentMobile': {
+                typeTitle = 'Оплата телефона';
+                break;
+            }
+            case 'prepaidCard': {
+                typeTitle = 'Пополнение с карты';
+                break;
+            }
+            case 'withdrawCard': {
+                typeTitle = 'Перевод на карту';
+                break;
+            }
+            default: {
+                typeTitle = 'Операция';
+            }
+        }
 
-		return `${typeTitle}: ${item.data.cardNumber || item.data.phoneNumber}`;
-	};
-	const getContent = (list) => {
-		const content = list.reduce((result, item, index) => {
-			const historyItemDate = moment(item.time, moment.ISO_8601);
-			const today = moment().format('L');
-			const isTodayHistoryItem = historyItemDate.format('L') === today;
+        return `${typeTitle}: ${item.data.cardNumber || item.data.phoneNumber}`;
+    };
+    const getContent = (list) => {
+        const content = list.reduce((result, item, index) => {
+            const historyItemDate = moment(item.time, moment.ISO_8601);
+            const today = moment().format('L');
+            const isTodayHistoryItem = historyItemDate.format('L') === today;
 
-			if (isTodayHistoryItem) {
-				result.push((
-					<HistoryItem key={index}>
-						<HistoryItemIcon bankSmLogoUrl={item.card.theme.bankSmLogoUrl} />
-						<HistoryItemTitle>
-							{getHistoryItemTitle(item)}
-						</HistoryItemTitle>
-						<HistoryItemTime>
-							{historyItemDate.format('HH:mm')}
-						</HistoryItemTime>
-						<HistoryItemSum>
-							{`${item.sum} ₽`}
-						</HistoryItemSum>
-					</HistoryItem>
-				));
-			}
+            if (isTodayHistoryItem) {
+                result.push((
+                    <HistoryItem key={index}>
+                        <HistoryItemIcon bankSmLogoUrl={item.card.theme.bankSmLogoUrl}/>
+                        <HistoryItemTitle>
+                            {getHistoryItemTitle(item)}
+                        </HistoryItemTitle>
+                        <HistoryItemTime>
+                            {historyItemDate.format('HH:mm')}
+                        </HistoryItemTime>
+                        <HistoryItemSum>
+                            {`${item.sum} ₽`}
+                        </HistoryItemSum>
+                    </HistoryItem>
+                ));
+            }
 
-			return result;
-		}, []);
-		return content.length === 0
-			? <HistoryContent><HistoryEmpty>История операций пуста</HistoryEmpty></HistoryContent>
-			: <HistoryContent>{content}</HistoryContent>;
-	};
+            return result;
+        }, []);
+        return content.length === 0
+            ? <HistoryContent><HistoryEmpty>История операций пуста</HistoryEmpty></HistoryContent>
+            : <HistoryContent>{content}</HistoryContent>;
+    };
 
-	return (
-		<HistoryLayout>
-			<HistoryTitle>Операции сегодня:</HistoryTitle>
-			{getContent(cardHistory)}
-		</HistoryLayout>
-	);
+    return (
+        <Container50Percent>
+            <HistoryLayout>
+                <HistoryTitle>Операции сегодня:</HistoryTitle>
+                {getContent(cardHistory)}
+            </HistoryLayout>
+        </Container50Percent>
+    );
 };
 
 History.propTypes = {
-	cardHistory: PropTypes.arrayOf(PropTypes.object).isRequired
+    cardHistory: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default History;
