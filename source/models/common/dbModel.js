@@ -55,7 +55,7 @@ class DbModel extends Model {
 			.limit(1)
 			.lean()
 			.exec();
-		return data[0].id + 1;
+		return data[0] ? data[0].id + 1 : 1;
 	}
 
 	async _insert(item) {
