@@ -54,11 +54,13 @@ async function getData(ctx) {
 	};
 	const cards = await ctx.cardsModel.getAll();
 	const transactions = await ctx.transactionsModel.getAll();
+	const tasks = await ctx.tasksModel.getAll();
 
 	return {
 		user,
 		cards,
-		transactions
+		transactions,
+        tasks
 	};
 }
 
@@ -67,7 +69,10 @@ router.param('id', (id, ctx, next) => next());
 
 router.get('/', async (ctx) => {
 	const data = await getData(ctx);
-	const indexView = getView('index');
+
+    console.log(data);
+
+    const indexView = getView('index');
 	const indexViewHtml = renderToStaticMarkup(indexView(data));
 
 	ctx.body = indexViewHtml;

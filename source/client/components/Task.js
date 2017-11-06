@@ -39,6 +39,8 @@ class Task extends Component {
      */
     onAddTaskSuccess(newTask) {
 
+        console.log(newTask);
+
         // this.props.onTransaction();
 
         this.setState({
@@ -90,7 +92,7 @@ Task.propTypes = {
         id: PropTypes.number,
         theme: PropTypes.object
     }).isRequired,
-    onTransaction: PropTypes.func.isRequired
+    // onAddTaskSuccess: PropTypes.func.isRequired
 };
 
 export default Task;

@@ -462,22 +462,18 @@ class TaskConstructor extends Component {
             }
         };
 
-        console.log(taskData);
-
-
         const isNumber = !isNaN(parseFloat(taskData.amount)) && isFinite(taskData.amount);
         if (!isNumber || taskData.amount === 0) {
             return;
         }
 
-        this.props.onAddTaskSuccess(taskData)
+        // this.props.onAddTaskSuccess(taskData)
 
-        /*axios
+        axios
             .post(`/cards/${taskData.from}/tasks`, taskData)
             .then((response) => {
-                console.log(response);
-                this.props.onAddTaskSuccess({})
-            });*/
+                this.props.onAddTaskSuccess(response.data)
+            });
     }
 
     /**
@@ -494,7 +490,7 @@ class TaskConstructor extends Component {
         return (
             <MobilePaymentLayout>
                 <form onSubmit={(event) => this.onSubmitForm(event)}>
-                    <MobilePaymentTitle>Запланировать действие</MobilePaymentTitle>
+                    <MobilePaymentTitle>Добавить задачу</MobilePaymentTitle>
                     <Underline/>
                     <InputField>
                         <Label>Лэйбл:</Label>
