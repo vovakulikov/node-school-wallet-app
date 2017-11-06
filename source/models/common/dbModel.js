@@ -35,6 +35,14 @@ class DbModel extends Model {
 		return data;
 	}
 
+	async getListBy(cond) {
+		const data = await this._MongooseModel
+			.find(cond)
+			.lean()
+			.exec();
+		return data;
+	}
+
 	/**
 	 * Генерирует новый id для записи
 	 * @return {Number}
@@ -47,7 +55,7 @@ class DbModel extends Model {
 			.limit(1)
 			.lean()
 			.exec();
-		return data[0].id + 1;
+		return data[0] ? data[0].id + 1 : 1;
 	}
 
 	async _insert(item) {

@@ -30,7 +30,7 @@ class Transactions extends DbModel {
 	 * @return {Promise.<Object[]>}
 	 */
 	async getByCard(cardId) {
-		const item = await this.getBy({cardId});
+		const item = await this.getListBy({cardId});
 		return item;
 	}
 
