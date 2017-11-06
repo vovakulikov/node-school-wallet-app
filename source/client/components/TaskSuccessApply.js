@@ -11,6 +11,16 @@ const MobilePaymentLayout = styled(Island)`
 	color: #fff;
 `;
 
+const Underline = styled.div`
+	height: 1px;
+	margin-bottom: 20px;
+	background-color: rgba(0, 0, 0, 0.16);
+`;
+
+const HeaderContainer = styled.div`
+    margin-bottom: 20px;
+`;
+
 const SuccessIcon = styled.div`
 	width: 48px;
 	height: 48px;
@@ -35,19 +45,20 @@ const CommissionTips = styled.div`
 `;
 
 const Section = styled.div`
-	position: relative;
-	padding-left: 160px;
 	margin-bottom: 20px;
 `;
 
 const SectionLabel = styled.div`
 	font-size: 15px;
-	position: absolute;
-	left: 0px;
+	display: inline-block;
+	width: 50%;
+	padding-right: 10px;
 `;
 
 const SectionValue = styled.div`
 	font-size: 15px;
+	display: inline-block;
+	width: 50%;
 `;
 
 const Instruction = styled.div`
@@ -71,38 +82,34 @@ const RepeatPayment = styled.button`
 	text-transform: uppercase;
 `;
 
-const MobilePaymentSuccess = ({transaction, repeatPayment}) => {
-    const {sum, phoneNumber, commission} = transaction;
+const MobilePaymentSuccess = ({newTask, repeatAddTask}) => {
+    const {label} = newTask;
 
     return (
         <MobilePaymentLayout>
-            <SuccessIcon />
-            <Header>МегаФон (Россия)</Header>
-            <Sum>{sum} ₽</Sum>
-            <CommissionTips>В том числе комиссия {commission} ₽</CommissionTips>
+            <HeaderContainer>
+                <SuccessIcon />
+                <Header>Задача успешно добавлена!</Header>
+            </HeaderContainer>
+            <Underline/>
             <Section>
-                <SectionLabel>Номер транзакции</SectionLabel>
-                <SectionValue>200580211311</SectionValue>
+                <SectionLabel>Лэйбл транзакции:</SectionLabel>
+                <SectionValue>{label}</SectionValue>
             </Section>
-            <Section>
-                <SectionLabel>Номер телефона</SectionLabel>
-                <SectionValue>{phoneNumber}</SectionValue>
-            </Section>
+            <Underline/>
             <Instruction>
-                Мы пришлем чек на sam@yandex.ru. Вы можете изменить email в «Настройках».
+                При выполнении задачи, вам будет выслано опевешение "Telegramm" на привязанный номер телефона.
             </Instruction>
-            <RepeatPayment onClick={repeatPayment}>Отправить еще один перевод</RepeatPayment>
+            <RepeatPayment onClick={repeatAddTask}>Добавить еще задачу</RepeatPayment>
         </MobilePaymentLayout>
     );
 };
 
 MobilePaymentSuccess.propTypes = {
-    transaction: PropTypes.shape({
-        sum: PropTypes.string,
-        phoneNumber: PropTypes.string,
-        commission: PropTypes.number
+    newTask: PropTypes.shape({
+        label: PropTypes.string,
     }).isRequired,
-    repeatPayment: PropTypes.func.isRequired
+    repeatAddTask: PropTypes.func.isRequired
 };
 
 export default MobilePaymentSuccess;

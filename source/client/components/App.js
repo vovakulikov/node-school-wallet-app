@@ -9,6 +9,7 @@ import {
 	CardsBar,
 	Header,
 	History,
+	TaskList,
 	Prepaid,
 	MobilePayment,
 	Task,
@@ -43,7 +44,6 @@ const CardPane = styled.div`
 const Workspace = styled.div`
 	display: flex;
 	flex-wrap: wrap;
-	max-width: 970px;
 	padding: 15px;
 `;
 
@@ -201,6 +201,7 @@ class App extends Component {
 					<Header activeCard={activeCard} />
 					<Workspace>
 						<History cardHistory={filteredHistory} />
+						<TaskList cardHistory={filteredHistory} />
 						<Prepaid
 							activeCard={activeCard}
 							inactiveCardsList={inactiveCardsList}

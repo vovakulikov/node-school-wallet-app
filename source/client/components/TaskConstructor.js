@@ -108,11 +108,11 @@ class TelephoneInput extends Component {
         super(props);
     }
 
-    onChange(event){
+    onChange(event) {
 
         const {onChange} = this.props;
 
-        if(onChange){
+        if (onChange) {
             onChange(event);
         }
     }
@@ -245,11 +245,11 @@ class TimesInput extends Component {
         this.executionTimeMinute = 'executionTimeMinute';
     }
 
-    onChange(name, value){
+    onChange(name, value) {
 
         const {onChange} = this.props;
 
-        if(onChange) {
+        if (onChange) {
             onChange(name, value);
         }
     }
@@ -280,7 +280,9 @@ class TimesInput extends Component {
                         <TimeSelect
                             name='targetType'
                             defaultValue='00'
-                            onChange={(value)=>{this.onChange(this.executionTimeHour, value)}}>
+                            onChange={(value) => {
+                                this.onChange(this.executionTimeHour, value)
+                            }}>
                             {hourSelectContent}
                         </TimeSelect>
                     </TimeSelectContainer>
@@ -289,7 +291,9 @@ class TimesInput extends Component {
                         <TimeSelect
                             name='targetType'
                             defaultValue='00'
-                            onChange={(value)=>{this.onChange(this.executionTimeMinute, value)}}>
+                            onChange={(value) => {
+                                this.onChange(this.executionTimeMinute, value)
+                            }}>
                             {minuteSelectContent}
                         </TimeSelect>
                     </TimeSelectContainer>
@@ -312,12 +316,12 @@ class TaskConstructor extends Component {
 
         this.targetTypes = [
             {
-                type: 'card',
+                type: 'card2Card',
                 label: 'Баланс карты',
                 defaultNumber: this.props.inactiveCardsList[0] ? this.props.inactiveCardsList[0].id.toString() : ''
             },
             {
-                type: 'mobile',
+                type: 'paymentMobile',
                 label: 'Баланс мобильного телефона',
                 defaultNumber: ''
             },
@@ -466,9 +470,14 @@ class TaskConstructor extends Component {
             return;
         }
 
-        axios
-            .post(`/task/${taskData.id}`, taskData)
-            .then(() => this.props.onAddTaskSuccess({}));
+        this.props.onAddTaskSuccess(taskData)
+
+        /*axios
+            .post(`/cards/${taskData.from}/tasks`, taskData)
+            .then((response) => {
+                console.log(response);
+                this.props.onAddTaskSuccess({})
+            });*/
     }
 
     /**
@@ -544,7 +553,9 @@ class TaskConstructor extends Component {
                             this.onPeriodValueChange(value)
                         }}/>}
                     <TimesInput
-                        onChange={(name, value)=>{this.onSelectChange(name, value)}}/>
+                        onChange={(name, value) => {
+                            this.onSelectChange(name, value)
+                        }}/>
                     <Underline/>
                     <PaymentButton bgColor='#fff' textColor='#108051'>Добавить</PaymentButton>
                 </form>

@@ -135,7 +135,7 @@ const History = ({cardHistory}) => {
 
 	return (
 		<HistoryLayout>
-			<HistoryTitle>Операции сегодня:</HistoryTitle>
+			<HistoryTitle>Запланированные задачи:</HistoryTitle>
 			{getContent(cardHistory)}
 		</HistoryLayout>
 	);

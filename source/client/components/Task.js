@@ -35,15 +35,15 @@ class Task extends Component {
 
     /**
      * Обработка успешного добавления задачи
-     * @param {Object} task - данные о транзакции
+     * @param {Object} newTask - данные о транзакции
      */
-    onAddTaskSuccess(task) {
+    onAddTaskSuccess(newTask) {
 
-        this.props.onTransaction();
+        // this.props.onTransaction();
 
         this.setState({
             stage: CodeStrings.stateStages.success,
-            task
+            task: newTask
         });
     }
 
@@ -69,19 +69,18 @@ class Task extends Component {
 
         if (this.state.stage === CodeStrings.stateStages.success) {
 
-           /* return (
+            return (
                 <TaskSuccessApply
-                    activeCard={activeCard}
-                    transaction={this.state.task}
-                    repeatPayment={() => this.repeatAddTask()} />
-            );*/
+                    newTask={this.state.task}
+                    repeatAddTask={() => this.repeatAddTask()} />
+            );
         }
 
         return (
             <TaskConstructor
                 activeCard={activeCard}
                 inactiveCardsList={inactiveCardsList}
-                onAddTaskSuccess={(task) => this.onAddTaskSuccess(task)} />
+                onAddTaskSuccess={(newTask) => this.onAddTaskSuccess(newTask)} />
         );
     }
 }
