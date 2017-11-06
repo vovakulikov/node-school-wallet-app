@@ -3,9 +3,10 @@ const express = require('express');
 const app = express();
 const bot = require('./bot-server.js');
 const bodyParser = require('body-parser');
+const config = require('./config');
 
 app.use(bot.webhookCallback('/secret-path'));
-bot.telegram.setWebhook('https://8f9e2bc2.ngrok.io/secret-path');
+bot.telegram.setWebhook(`${config.botHost}/secret-path`);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
