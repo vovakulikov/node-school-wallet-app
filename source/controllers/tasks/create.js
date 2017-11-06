@@ -10,10 +10,6 @@ module.exports = async (ctx) => {
 	const task = _.pick(ctx.request.body, fields);
 	const cardId = Number(ctx.params.id);
 
-	task.target = JSON.parse(task.target);
-	task.period = JSON.parse(task.period);
-	task.executionTime = JSON.parse(task.executionTime);
-
 	const card = await ctx.cardsModel.get(cardId);
 	if (!card) {
 		throw new ApplicationError(`No card with id ${cardId}`, 404);

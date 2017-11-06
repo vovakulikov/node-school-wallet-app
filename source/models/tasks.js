@@ -21,6 +21,11 @@ class Tasks extends DbModel {
 				id: await this._generateId()
 			});
 
+			newTask.executionTime = {
+				hour: parseInt(task.executionTime.hour, 10),
+				minute: parseInt(task.executionTime.minute, 10)
+			};
+
 			await this._insert(newTask);
 			return newTask;
 		}
