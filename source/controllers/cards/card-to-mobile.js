@@ -4,7 +4,7 @@ const commission = 3;
 
 module.exports = async (ctx) => {
 	const cardId = ctx.params.id;
-   
+
 	const operation = ctx.request.body;
 	const {sum, phoneNumber} = operation;
 
@@ -18,13 +18,14 @@ module.exports = async (ctx) => {
 		sum
     });
 
-    const card = await ctx.cardsModel.get(cardId)
-    ctx.bot.notify({ 
-        action: 'card-to-mobile', 
-        card, 
-        phoneNumber, 
+    const card = await ctx.cardsModel.get(cardId);
+
+    ctx.bot.notify({
+        action: 'card-to-mobile',
+        card,
+        phoneNumber,
         commission,
-        sum, 
+        sum,
         date: new Date().toISOString()
     });
 
