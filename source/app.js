@@ -23,6 +23,7 @@ const cardToCard = require('./controllers/cards/card-to-card');
 const cardToMobile = require('./controllers/cards/card-to-mobile');
 const mobileToCard = require('./controllers/cards/mobile-to-card');
 const getTasksController = require('./controllers/tasks/get');
+const getAllTasksController = require('./controllers/tasks/get-tasks');
 const deleteTaskController = require('./controllers/tasks/delete');
 const createTaskController = require('./controllers/tasks/create');
 
@@ -71,9 +72,6 @@ router.param('id', (id, ctx, next) => next());
 
 router.get('/', async (ctx) => {
 	const data = await getData(ctx);
-
-    console.log(data);
-
     const indexView = getView('index');
 	const indexViewHtml = renderToStaticMarkup(indexView(data));
 
@@ -96,6 +94,7 @@ router.post('/cards/:id/pay', cardToMobile);
 router.post('/cards/:id/fill', mobileToCard);
 
 router.get('/transactions/', getTransactionsController);
+router.get('/tasks/', getAllTasksController);
 
 router.all('/error', errorController);
 

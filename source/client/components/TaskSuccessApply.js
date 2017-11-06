@@ -98,7 +98,7 @@ const MobilePaymentSuccess = ({newTask, repeatAddTask}) => {
             </Section>
             <Underline/>
             <Instruction>
-                При выполнении задачи, вам будет выслано опевешение "Telegramm" на привязанный номер телефона.
+                При выполнении задачи, вам будет выслано опевещение "Telegramm" на привязанный номер телефона.
             </Instruction>
             <RepeatPayment onClick={repeatAddTask}>Добавить еще задачу</RepeatPayment>
         </MobilePaymentLayout>

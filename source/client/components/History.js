@@ -6,7 +6,7 @@ import moment from 'moment';
 import {Island, Container50Percent} from './';
 
 const HistoryLayout = styled(Island)`
-	min-height: 400px;
+	height: 400px;
 	overflow-y: scroll;
 	padding: 0;
 	background-color: rgba(0, 0, 0, 0.05);

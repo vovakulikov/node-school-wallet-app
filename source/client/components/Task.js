@@ -41,14 +41,13 @@ class Task extends Component {
      */
     onAddTaskSuccess(newTask) {
 
-        console.log(newTask);
-
-        // this.props.onTransaction();
 
         this.setState({
             stage: CodeStrings.stateStages.success,
             task: newTask
         });
+
+        this.props.onTask();
     }
 
     /**
@@ -98,7 +97,7 @@ Task.propTypes = {
         id: PropTypes.number,
         theme: PropTypes.object
     }).isRequired,
-    // onAddTaskSuccess: PropTypes.func.isRequired
+    onTask: PropTypes.func.isRequired
 };
 
 export default Task;

@@ -6,7 +6,6 @@ const Task = mongoose.model('Task', {
     },
     label: {
         type: String,
-        required: true
     },
     from: {
         type: Number,

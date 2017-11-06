@@ -6,7 +6,7 @@ import moment from 'moment';
 import {Island, Container50Percent} from './';
 
 const HistoryLayout = styled(Island)`
-	min-height: 400px;
+	height: 400px;
 	overflow-y: scroll;
 	padding: 0;
 	background-color: rgba(0, 0, 0, 0.05);
@@ -78,72 +78,74 @@ const HistoryItemSum = styled.div`
 	font-weight: bold;
 `;
 
-const History = ({cardHistory}) => {
-	const getHistoryItemTitle = (item) => {
-		let typeTitle = '';
+const History = ({cardTasks}) => {
 
-		switch (item.type) {
-			case 'paymentMobile': {
-				typeTitle = 'Оплата телефона';
-				break;
-			}
-			case 'prepaidCard': {
-				typeTitle = 'Пополнение с карты';
-				break;
-			}
-			case 'withdrawCard': {
-				typeTitle = 'Перевод на карту';
-				break;
-			}
-			default: {
-				typeTitle = 'Операция';
-			}
-		}
+    /*<HistoryItemIcon bankSmLogoUrl={item.card.theme.bankSmLogoUrl}/>
+                            <HistoryItemTitle>
+                                {getTaskItemTitle(item)}
+                            </HistoryItemTitle>
+                            <HistoryItemTime>
+                                {historyItemDate.format('HH:mm')}
+                            </HistoryItemTime>
+                            <HistoryItemSum>
+                                {`${item.sum} ₽`}
+                            </HistoryItemSum>*/
 
-		return `${typeTitle}: ${item.data.cardNumber || item.data.phoneNumber}`;
-	};
-	const getContent = (list) => {
-		const content = list.reduce((result, item, index) => {
-			const historyItemDate = moment(item.time, moment.ISO_8601);
-			const today = moment().format('L');
-			const isTodayHistoryItem = historyItemDate.format('L') === today;
 
-			if (isTodayHistoryItem) {
-				result.push((
-					<HistoryItem key={index}>
-						<HistoryItemIcon bankSmLogoUrl={item.card.theme.bankSmLogoUrl} />
-						<HistoryItemTitle>
-							{getHistoryItemTitle(item)}
-						</HistoryItemTitle>
-						<HistoryItemTime>
-							{historyItemDate.format('HH:mm')}
-						</HistoryItemTime>
-						<HistoryItemSum>
-							{`${item.sum} ₽`}
-						</HistoryItemSum>
-					</HistoryItem>
-				));
-			}
+    const getTaskItemTitle = (item) => {
+        let typeTitle = item.label || '';
 
-			return result;
-		}, []);
-		return content.length === 0
-			? <HistoryContent><HistoryEmpty>История операций пуста</HistoryEmpty></HistoryContent>
-			: <HistoryContent>{content}</HistoryContent>;
-	};
+        if (!typeTitle) {
+            switch (item.target.type) {
+                case 'paymentMobile': {
+                    typeTitle = 'Оплата телефона';
+                    break;
+                }
+                case 'prepaidCard': {
+                    typeTitle = 'Пополнение с карты';
+                    break;
+                }
+                case 'card2Card': {
+                    typeTitle = 'Перевод на карту';
+                    break;
+                }
+                default: {
+                    typeTitle = 'Операция';
+                }
+            }
+        }
 
-	return (
-		<Container50Percent>
-		    <HistoryLayout>
-		    	<HistoryTitle>Добавленные задачи:</HistoryTitle>
-		    	{getContent(cardHistory)}
-		    </HistoryLayout>
-		</Container50Percent>
-	);
+        return `${typeTitle}: ${item.target.number}`;
+    };
+
+    const getContent = (list) => {
+
+        const content = list.map((item, index) => {
+
+                return (<HistoryItem key={index}>
+                            <HistoryItemTitle>
+                                {getTaskItemTitle(item)}
+                            </HistoryItemTitle>
+                        </HistoryItem>);
+        });
+
+        return content.length === 0
+            ? <HistoryContent><HistoryEmpty>Нет ниодной добавленной задачи</HistoryEmpty></HistoryContent>
+            : <HistoryContent>{content}</HistoryContent>;
+    };
+
+    return (
+        <Container50Percent>
+            <HistoryLayout>
+                <HistoryTitle>Добавленные задачи:</HistoryTitle>
+                {getContent(cardTasks)}
+            </HistoryLayout>
+        </Container50Percent>
+    );
 };
 
 History.propTypes = {
-	cardHistory: PropTypes.arrayOf(PropTypes.object).isRequired
+    cardTasks: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default History;

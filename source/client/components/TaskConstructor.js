@@ -375,7 +375,7 @@ class TaskConstructor extends Component {
     /**
      * Обработчик переключения типа задачи
      *
-     * @param {string} currentPeriodType индекс выбранной карты
+     * @param {string} newPeriodType индекс выбранной карты
      */
     onPeriodTypeChange(newPeriodType) {
 
@@ -391,7 +391,7 @@ class TaskConstructor extends Component {
     /**
      * Обработчик переключения типа задачи
      *
-     * @param {string} currentPeriodType индекс выбранной карты
+     * @param {string} newPeriodType индекс выбранной карты
      */
     onPeriodValueChange(newPeriodType) {
 
@@ -429,7 +429,8 @@ class TaskConstructor extends Component {
     /**
      * Обработчик переключения карты
      *
-     * @param {Number} activeCardIndex индекс выбранной карты
+     * @param {Number} name индекс выбранной карты
+     * @param {Number} value индекс выбранной карты
      */
     onSelectChange(name, value) {
         this.setState({[name]: value});
@@ -462,12 +463,20 @@ class TaskConstructor extends Component {
             }
         };
 
-        const isNumber = !isNaN(parseFloat(taskData.amount)) && isFinite(taskData.amount);
-        if (!isNumber || taskData.amount === 0) {
+        const isValidAmount = !isNaN(parseFloat(taskData.amount)) && isFinite(taskData.amount);
+
+        if (!isValidAmount || taskData.amount === 0) {
             return;
         }
 
-        // this.props.onAddTaskSuccess(taskData)
+        if (taskData.target.type === this.targetTypes[1].type) {
+
+            const isValidPhoneNumber = !isNaN(parseInt(taskData.target.number)) && isFinite(taskData.target.number);
+
+            if (!isValidPhoneNumber || taskData.target.number === 0) {
+                return;
+            }
+        }
 
         axios
             .post(`/cards/${taskData.from}/tasks`, taskData)
