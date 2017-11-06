@@ -41,6 +41,8 @@ mongoose.Promise = global.Promise;
 
 const app = new Koa();
 
+const botConnection = require('./telegram-bot/models/botConnectModel');
+
 function getView(viewId) {
 	const viewPath = path.resolve(__dirname, 'views', `${viewId}.server.js`);
 	delete require.cache[require.resolve(viewPath)];
@@ -116,6 +118,7 @@ app.use(async (ctx, next) => {
 	ctx.cardsModel = new CardsModel();
 	ctx.transactionsModel = new TransactionsModel();
 	ctx.tasksModel = new TasksModel();
+	ctx.bot = botConnection;
 
 	await next();
 });
