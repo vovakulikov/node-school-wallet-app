@@ -9,7 +9,7 @@ bot.telegram.setWebhook(`${config.botHost}/secret-path`);
 что здесь происходит мы подлючаем нашего бота к express серверу и второй строчкой
 мы явно указваем host на котором наш бот будет жить -> bot.telegram.setWebhook(`${config.botHost}/secret-path`);
 
-Что нужно сделать. В файле telegram-bot/config.js находятся конфиг для подключение бота к нашему прилоежнию
+Что нужно сделать. В файле telegram-bot/index.js находятся конфиг для подключение бота к нашему прилоежнию
 Так вот. В этом конфиге есть два поле appHost и botHost; В appHost нужно указать где лежить наше приложение,
 уже задеплоинное. (Например https://achivka.ru/)
 
@@ -23,7 +23,7 @@ bot.telegram.setWebhook(`${config.botHost}/secret-path`);
 1. поднимите сервер пложения npm start,
 2. C помощью ngrok http <номер порта сервера с телеграм ботом> запроксируйте сервер где будет подниматься сервер с ботом
 (что такое ngrok и как им пользоваться можно почитать здесь https://ngrok.com/) После того как запустите ngrok он выдаст нам
-ссылки на http proxy и на https. Нам нужен https, копируем его и вставляем в source/telegram-bot/config.js в поле botHost
+ссылки на http proxy и на https. Нам нужен https, копируем его и вставляем в source/telegram-bot/index.js в поле botHost
 3. Поднимите сервер телеграмм бота npm run start:bot
 
 После этого должно все поднятся.

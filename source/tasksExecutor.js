@@ -4,6 +4,7 @@ const logger = require('libs/logger')('task-executor');
 const TaskModel = require('./models/tasks');
 const CardModel = require('./models/cards');
 const TransactionsModel = require('./models/transactions');
+const bot = require('./telegram-bot/bot/connection');
 
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/school-wallet', {useMongoClient: true});
@@ -15,7 +16,7 @@ const mTrans = new TransactionsModel();
 
 crontab.scheduleJob('*/5 * * * *', () => {
 	// This will call this function every 1 minute
-	// console.log("It's been 1 minute!");
+	console.log("It's been 1 minute!");
 
 	logger.info('Tasks executor started.');
 
@@ -48,7 +49,7 @@ function closeConnection(err) {
 	logger.info('Tasks executor done.');
 }
 
-async function executeTask({id, from, amount, target}) {
+async function executeTask({id, from, amount, target, label}) {
 	let card = await mCards.get(from);
 	let data = null;
 
@@ -70,6 +71,15 @@ async function executeTask({id, from, amount, target}) {
 			break;
 		case 'paymentMobile':
 			data = {phoneNumber: target.number};
+			// Отправляем нотификации пользователем
+			bot.notify({
+				action: 'card-to-mobile',
+				card: card,
+				phoneNumber: target.number,
+				commission: 3,
+				sum: amount,
+				date: new Date().toISOString()
+			});
 			break;
 		default:
 			throw new Error(`Unexpected payment type in task id=${id}`);
@@ -103,6 +113,15 @@ async function card2CardPay (cardId, amount, sourceCard, id) {
 		type: 'card2Card',
 		data: {cardNumber: sourceCard.cardNumber},
 		sum: amount.toString(10)
+	});
+
+	// Отправляем нотификации через бота
+	bot.notify({
+		action: 'card-to-card',
+		sourceCard,
+		targetCard,
+		sum: amount,
+		date: new Date().toISOString()
 	});
 
 	return {

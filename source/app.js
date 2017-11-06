@@ -41,8 +41,7 @@ mongoose.connect(config.get('mongo.uri'), { useMongoClient: true });
 mongoose.Promise = global.Promise;
 
 const app = new Koa();
-
-const botConnection = require('./telegram-bot/models/botConnectModel');
+const botConnection = require('./telegram-bot/bot/connection');
 
 function getView(viewId) {
 	const viewPath = path.resolve(__dirname, 'views', `${viewId}.server.js`);
