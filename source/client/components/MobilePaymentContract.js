@@ -6,7 +6,6 @@ import axios from 'axios';
 import {Island, Title, Button, Input} from './';
 
 const MobilePaymentLayout = styled(Island)`
-	width: 440px;
 	background: #108051;
 `;
 
@@ -48,8 +47,8 @@ const Underline = styled.div`
 	background-color: rgba(0, 0, 0, 0.16);
 `;
 
-const PaymentButton = styled(Button)`
-	float: right;
+const PaymentButtonContainer = styled.div`
+	text-align: right;
 `;
 
 const InputPhoneNumber = styled(Input)`
@@ -71,121 +70,123 @@ const InputCommision = styled(Input)`
  * Компонент MobilePaymentContract
  */
 class MobilePaymentContract extends Component {
-	/**
-	 * Конструктор
-	 * @param {Object} props свойства компонента MobilePaymentContract
-	 */
-	constructor(props) {
-		super(props);
+    /**
+     * Конструктор
+     * @param {Object} props свойства компонента MobilePaymentContract
+     */
+    constructor(props) {
+        super(props);
 
-		this.state = {
-			phoneNumber: '+79218908064',
-			sum: 0,
-			commission: 3
-		};
-	}
+        this.state = {
+            phoneNumber: '+79218908064',
+            sum: 0,
+            commission: 3
+        };
+    }
 
-	/**
-	 * Получить цену с учетом комиссии
-	 * @returns {Number}
-	 */
-	getSumWithCommission() {
-		const {sum, commission} = this.state;
+    /**
+     * Получить цену с учетом комиссии
+     * @returns {Number}
+     */
+    getSumWithCommission() {
+        const {sum, commission} = this.state;
 
-		const isNumber = !isNaN(parseFloat(sum)) && isFinite(sum);
-		if (!isNumber || sum <= 0) {
-			return 0;
-		}
+        const isNumber = !isNaN(parseFloat(sum)) && isFinite(sum);
+        if (!isNumber || sum <= 0) {
+            return 0;
+        }
 
-		return Number(sum) + Number(commission);
-	}
+        return Number(sum) + Number(commission);
+    }
 
-	/**
-	 * Отправка формы
-	 * @param {Event} event событие отправки формы
-	 */
-	onSubmitForm(event) {
-		if (event) {
-			event.preventDefault();
-		}
+    /**
+     * Отправка формы
+     * @param {Event} event событие отправки формы
+     */
+    onSubmitForm(event) {
+        if (event) {
+            event.preventDefault();
+        }
 
-		const {sum, phoneNumber, commission} = this.state;
+        const {sum, phoneNumber, commission} = this.state;
 
-		const isNumber = !isNaN(parseFloat(sum)) && isFinite(sum);
-		if (!isNumber || sum === 0) {
-			return;
-		}
+        const isNumber = !isNaN(parseFloat(sum)) && isFinite(sum);
+        if (!isNumber || sum === 0) {
+            return;
+        }
 
-		const {activeCard} = this.props;
+        const {activeCard} = this.props;
 
-		axios
-			.post(`/cards/${activeCard.id}/pay`, {phoneNumber, sum})
-			.then(() => this.props.onPaymentSuccess({sum, phoneNumber, commission}));
-	}
+        axios
+            .post(`/cards/${activeCard.id}/pay`, {phoneNumber, sum})
+            .then(() => this.props.onPaymentSuccess({sum, phoneNumber, commission}));
+    }
 
-	/**
-	 * Обработка изменения значения в input
-	 * @param {Event} event событие изменения значения input
-	 */
-	onChangeInputValue(event) {
-		if (!event) {
-			return;
-		}
+    /**
+     * Обработка изменения значения в input
+     * @param {Event} event событие изменения значения input
+     */
+    onChangeInputValue(event) {
+        if (!event) {
+            return;
+        }
 
-		const {name, value} = event.target;
+        const {name, value} = event.target;
 
-		this.setState({
-			[name]: value
-		});
-	}
+        this.setState({
+            [name]: value
+        });
+    }
 
-	/**
-	 * Рендер компонента
-	 *
-	 * @override
-	 * @returns {JSX}
-	 */
-	render() {
-		const {commission} = this.state;
+    /**
+     * Рендер компонента
+     *
+     * @override
+     * @returns {JSX}
+     */
+    render() {
+        const {commission} = this.state;
 
-		return (
-			<MobilePaymentLayout>
-				<form onSubmit={(event) => this.onSubmitForm(event)}>
-					<MobilePaymentTitle>Пополнить телефон</MobilePaymentTitle>
-					<InputField>
-						<Label>Телефон</Label>
-						<InputPhoneNumber
-							name='phoneNumber'
-							value={this.state.phoneNumber}
-							readOnly='true' />
-					</InputField>
-					<InputField>
-						<Label>Сумма</Label>
-						<InputSum
-							name='sum'
-							value={this.state.sum}
-							onChange={(event) => this.onChangeInputValue(event)} />
-						<Currency>₽</Currency>
-					</InputField>
-					<InputField>
-						<Label>Спишется</Label>
-						<InputCommision value={this.getSumWithCommission()} />
-						<Currency>₽</Currency>
-					</InputField>
-					<Commission>Размер коммиссии составляет {commission} ₽</Commission>
-					<Underline />
-					<PaymentButton bgColor='#fff' textColor='#108051'>Заплатить</PaymentButton>
-				</form>
-			</MobilePaymentLayout>
-		);
-	}
+        return (
+            <MobilePaymentLayout>
+                <form onSubmit={(event) => this.onSubmitForm(event)}>
+                    <MobilePaymentTitle>Пополнить телефон</MobilePaymentTitle>
+                    <InputField>
+                        <Label>Телефон</Label>
+                        <InputPhoneNumber
+                            name='phoneNumber'
+                            value={this.state.phoneNumber}
+                            readOnly='true'/>
+                    </InputField>
+                    <InputField>
+                        <Label>Сумма</Label>
+                        <InputSum
+                            name='sum'
+                            value={this.state.sum}
+                            onChange={(event) => this.onChangeInputValue(event)}/>
+                        <Currency>₽</Currency>
+                    </InputField>
+                    <InputField>
+                        <Label>Спишется</Label>
+                        <InputCommision value={this.getSumWithCommission()}/>
+                        <Currency>₽</Currency>
+                    </InputField>
+                    <Commission>Размер комиссии составляет {commission} ₽</Commission>
+                    <Underline/>
+                    <PaymentButtonContainer>
+                        <Button bgColor='#fff' textColor='#108051'>Пополнить</Button>
+                    </PaymentButtonContainer>
+                </form>
+            </MobilePaymentLayout>
+        );
+    }
 }
 
 MobilePaymentContract.propTypes = {
-	activeCard: PropTypes.shape({
-		id: PropTypes.number
-	}).isRequired,
-	onPaymentSuccess: PropTypes.func.isRequired
+    activeCard: PropTypes.shape({
+        id: PropTypes.number
+    }).isRequired,
+    onPaymentSuccess: PropTypes.func.isRequired
 };
 
 export default MobilePaymentContract;

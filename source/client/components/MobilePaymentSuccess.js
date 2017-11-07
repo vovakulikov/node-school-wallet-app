@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import {Island} from './';
 
 const MobilePaymentLayout = styled(Island)`
-	width: 440px;
 	background: #108051;
 	position: relative;
 	color: #fff;

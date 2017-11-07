@@ -8,6 +8,7 @@ const Koa = require('koa');
 const serve = require('koa-static');
 const router = require('koa-router')();
 const bodyParser = require('koa-bodyparser')();
+const config = require('config');
 
 const logger = require('libs/logger')('app');
 
@@ -21,20 +22,26 @@ const createTransactionsController = require('./controllers/transactions/create'
 const cardToCard = require('./controllers/cards/card-to-card');
 const cardToMobile = require('./controllers/cards/card-to-mobile');
 const mobileToCard = require('./controllers/cards/mobile-to-card');
+const getTasksController = require('./controllers/tasks/get');
+const getAllTasksController = require('./controllers/tasks/get-tasks');
+const deleteTaskController = require('./controllers/tasks/delete');
+const createTaskController = require('./controllers/tasks/create');
 
 const errorController = require('./controllers/error');
 
 const ApplicationError = require('libs/application-error');
 const CardsModel = require('source/models/cards');
 const TransactionsModel = require('source/models/transactions');
+const TasksModel = require('source/models/tasks');
 
 const getTransactionsController = require('./controllers/transactions/get-transactions');
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/school-wallet', { useMongoClient: true });
+mongoose.connect(config.get('mongo.uri'), { useMongoClient: true });
 mongoose.Promise = global.Promise;
 
 const app = new Koa();
+const botConnection = require('./telegram-bot/bot/connection');
 
 function getView(viewId) {
 	const viewPath = path.resolve(__dirname, 'views', `${viewId}.server.js`);
@@ -49,11 +56,13 @@ async function getData(ctx) {
 	};
 	const cards = await ctx.cardsModel.getAll();
 	const transactions = await ctx.transactionsModel.getAll();
+	const tasks = await ctx.tasksModel.getAll();
 
 	return {
 		user,
 		cards,
-		transactions
+		transactions,
+        tasks
 	};
 }
 
@@ -62,7 +71,7 @@ router.param('id', (id, ctx, next) => next());
 
 router.get('/', async (ctx) => {
 	const data = await getData(ctx);
-	const indexView = getView('index');
+    const indexView = getView('index');
 	const indexViewHtml = renderToStaticMarkup(indexView(data));
 
 	ctx.body = indexViewHtml;
@@ -75,11 +84,16 @@ router.delete('/cards/:id', deleteCardController);
 router.get('/cards/:id/transactions/', getTransactionController);
 router.post('/cards/:id/transactions/', createTransactionsController);
 
+router.get('/cards/:id/tasks/', getTasksController);
+router.post('/cards/:id/tasks/', createTaskController);
+router.delete('/tasks/:id', deleteTaskController);
+
 router.post('/cards/:id/transfer', cardToCard);
 router.post('/cards/:id/pay', cardToMobile);
 router.post('/cards/:id/fill', mobileToCard);
 
 router.get('/transactions/', getTransactionsController);
+router.get('/tasks/', getAllTasksController);
 
 router.all('/error', errorController);
 
@@ -106,6 +120,8 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
 	ctx.cardsModel = new CardsModel();
 	ctx.transactionsModel = new TransactionsModel();
+	ctx.tasksModel = new TasksModel();
+	ctx.bot = botConnection;
 
 	await next();
 });
@@ -123,12 +139,12 @@ const listenCallback = function() {
 	logger.info(`Application started on ${port}`);
 };
 
-const LISTEN_PORT = 3000;
+const LISTEN_PORT = config.get('server.port') || 3000;
 
-if (!module.parent && process.env.NODE_HTTPS) {
+if (!module.parent && config.get('isHttps')) {
 	const protocolSecrets = {
-		key: fs.readFileSync('fixtures/key.key'),
-		cert: fs.readFileSync('fixtures/cert.crt')
+		key: fs.readFileSync(config.get('ssl.key')),
+		cert: fs.readFileSync(config.get('ssl.cert'))
 	};
 
 	https
@@ -136,7 +152,7 @@ if (!module.parent && process.env.NODE_HTTPS) {
 		.listen(LISTEN_PORT, listenCallback);
 }
 
-if (!module.parent && !process.env.NODE_HTTPS) {
+if (!module.parent && !config.get('isHttps')) {
 	http
 		.createServer(app.callback())
 		.listen(LISTEN_PORT, listenCallback);

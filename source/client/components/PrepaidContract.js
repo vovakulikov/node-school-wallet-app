@@ -6,7 +6,6 @@ import axios from 'axios';
 import {Island, Title, Button, Input} from './';
 
 const PrepaidLayout = styled(Island)`
-	width: 350px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;

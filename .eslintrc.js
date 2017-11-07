@@ -17,8 +17,8 @@ module.exports = {
 	"rules": {
 		"strict": 0,
 		"comma-dangle": 0,
-		"no-tabs": 0,
-		"indent": [2, "tab", {"SwitchCase": 1}],
+		// "no-tabs": 0,
+		// "indent": [2, "tab", {"SwitchCase": 1}],
 		"arrow-parens": [2, "always"],
 		"no-underscore-dangle": [2, {"allowAfterThis": true}],
 		"max-len": [2, 120, 4, {"ignoreUrls": true}],

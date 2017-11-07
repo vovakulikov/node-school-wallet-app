@@ -4,7 +4,6 @@ import styled from 'emotion/react';
 
 const StyledInput = styled.input`
 	display: inline-block;
-	position: relative;
 	height: 36px;
 	padding: 4px 7px;
 	border: 1px solid rgba(0, 0, 0, 0.04);

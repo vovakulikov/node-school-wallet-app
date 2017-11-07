@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import {Island, Title} from './';
 
 const PrepaidLayout = styled(Island)`
-	width: 350px;
 	display: flex;
 	flex-direction: column;
 	background-color: #353536;
