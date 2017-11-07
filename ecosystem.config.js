@@ -19,6 +19,13 @@ module.exports = {
 			env: {
 				NODE_PATH: '.'
 			}
+		},
+		{
+			name: 'node-school-bot',
+			script: 'source/telegram-bot/app.js',
+			env: {
+				NODE_PATH: '.'
+			}
 		}
 	]
 };

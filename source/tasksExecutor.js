@@ -14,7 +14,7 @@ const mTasks = new TaskModel();
 const mCards = new CardModel();
 const mTrans = new TransactionsModel();
 
-crontab.scheduleJob('*/5 * * * *', () => {
+crontab.scheduleJob('*/1 * * * *', () => {
 	// This will call this function every 1 minute
 	console.log("It's been 1 minute!");
 
