@@ -118,32 +118,39 @@ const AddTaskSuccess = ({newTask, inactiveCardsList, repeatAddTask}) => {
 
         const weekdays = [
             {
-                value: 'mon',
-                label: 'Понедельник',
+                value: '1',
+                namedValue: 'mon',
+                label: 'в "понедельник"',
             },
             {
-                value: 'tue',
-                label: 'Вторник',
+                value: '2',
+                namedValue: 'tue',
+                label: 'во "вторник"',
             },
             {
-                value: 'wed',
-                label: 'Среда',
+                value: '3',
+                namedValue: 'wed',
+                label: 'в "среду"',
             },
             {
-                value: 'thu',
-                label: 'Четверг',
+                value: '4',
+                namedValue: 'thu',
+                label: 'в "четверг"',
             },
             {
-                value: 'fri',
-                label: 'Пятница',
+                value: '5',
+                namedValue: 'fri',
+                label: 'в "пятницу"',
             },
             {
-                value: 'sat',
-                label: 'Суббота',
+                value: '6',
+                namedValue: 'sat',
+                label: 'в "вубботу"',
             },
             {
-                value: 'sun',
-                label: 'Воскресенье',
+                value: '7',
+                namedValue: 'sun',
+                label: 'в "воскресенье"',
             },
         ];
 
@@ -156,9 +163,9 @@ const AddTaskSuccess = ({newTask, inactiveCardsList, repeatAddTask}) => {
 
         } else if (task.period.type === 'week') {
 
-            const weekday = weekdays.find(day => day.value === task.period.value);
+            const weekday = weekdays.find(day => +day.value === +task.period.value || day.value === +task.period.namedValue);
 
-            return `Каждую неделю в "${weekday.label.toLowerCase()}" в ${hour}:${minute}`;
+            return `Каждую неделю ${weekday.label} в ${hour}:${minute}`;
         }
     };
 

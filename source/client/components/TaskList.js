@@ -127,8 +127,55 @@ const TaskList = ({cardTasks, inactiveCardsList}) => {
         const hour = taskItem.executionTime.hour > 9 ? taskItem.executionTime.hour : '0' + taskItem.executionTime.hour;
         const minute = taskItem.executionTime.minute > 9 ? taskItem.executionTime.minute : '0' + taskItem.executionTime.minute;
 
+        const weekdays = [
+            {
+                value: '1',
+                namedValue: 'mon',
+                label: 'в "понедельник"',
+            },
+            {
+                value: '2',
+                namedValue: 'tue',
+                label: 'во "вторник"',
+            },
+            {
+                value: '3',
+                namedValue: 'wed',
+                label: 'в "среду"',
+            },
+            {
+                value: '4',
+                namedValue: 'thu',
+                label: 'в "четверг"',
+            },
+            {
+                value: '5',
+                namedValue: 'fri',
+                label: 'в "пятницу"',
+            },
+            {
+                value: '6',
+                namedValue: 'sat',
+                label: 'в "вубботу"',
+            },
+            {
+                value: '7',
+                namedValue: 'sun',
+                label: 'в "воскресенье"',
+            },
+        ];
 
-        return `${taskItem.period.type[0].toUpperCase()}-${taskItem.period.value} | ${hour}:${minute}`
+        let periodValue = taskItem.period.value;
+
+        if (taskItem.period.type === 'week') {
+
+            const weekday = weekdays.find(day => taskItem.period.value.toString() === day.value || taskItem.period.value.toString() === day.namedValue);
+
+            periodValue = weekday.namedValue.toUpperCase();
+        }
+
+
+        return `${taskItem.period.type[0].toUpperCase()}-${periodValue} | ${hour}:${minute}`
     };
 
 

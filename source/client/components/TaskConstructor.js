@@ -177,31 +177,31 @@ class WeekDaySelect extends Component {
         super(props);
         this.weekdays = [
             {
-                value: 'mon',
+                value: '1',
                 label: 'Понедельник',
             },
             {
-                value: 'tue',
+                value: '2',
                 label: 'Вторник',
             },
             {
-                value: 'wed',
+                value: '3',
                 label: 'Среда',
             },
             {
-                value: 'thu',
+                value: '4',
                 label: 'Четверг',
             },
             {
-                value: 'fri',
+                value: '5',
                 label: 'Пятница',
             },
             {
-                value: 'sat',
+                value: '6',
                 label: 'Суббота',
             },
             {
-                value: 'sun',
+                value: '7',
                 label: 'Воскресенье',
             },
         ]
