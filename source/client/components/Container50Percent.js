@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'emotion/react';
 
 const Container = styled.dev`
-	width:50%;
-	min-width: 500px;
+	flex-basis: 500px;
+	flex-grow: 1;
 `;
 
 const Container50Percent = ({children}) => (<Container>{children}</Container>);
