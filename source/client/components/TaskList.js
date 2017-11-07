@@ -131,51 +131,53 @@ const TaskList = ({cardTasks, inactiveCardsList}) => {
             {
                 value: '1',
                 namedValue: 'mon',
-                label: 'в "понедельник"',
+                label: 'ПН',
             },
             {
                 value: '2',
                 namedValue: 'tue',
-                label: 'во "вторник"',
+                label: 'ВТ',
             },
             {
                 value: '3',
                 namedValue: 'wed',
-                label: 'в "среду"',
+                label: 'СР',
             },
             {
                 value: '4',
                 namedValue: 'thu',
-                label: 'в "четверг"',
+                label: 'ЧТ',
             },
             {
                 value: '5',
                 namedValue: 'fri',
-                label: 'в "пятницу"',
+                label: 'ПТ',
             },
             {
                 value: '6',
                 namedValue: 'sat',
-                label: 'в "вубботу"',
+                label: 'СБ',
             },
             {
                 value: '7',
                 namedValue: 'sun',
-                label: 'в "воскресенье"',
+                label: 'ВС',
             },
         ];
 
         let periodValue = taskItem.period.value;
+        let periodLabel = taskItem.period.type === 'month' ? 'МЕС' : 'НЕД';
+
 
         if (taskItem.period.type === 'week') {
 
             const weekday = weekdays.find(day => taskItem.period.value.toString() === day.value || taskItem.period.value.toString() === day.namedValue);
 
-            periodValue = weekday.namedValue.toUpperCase();
+            periodValue = weekday.label.toUpperCase();
         }
 
 
-        return `${taskItem.period.type[0].toUpperCase()}-${periodValue} | ${hour}:${minute}`
+        return `${periodLabel}-${periodValue} | ${hour}:${minute}`
     };
 
 
