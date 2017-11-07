@@ -16,11 +16,7 @@ class TelegramUsers extends DbModel {
 	 * @returns {Promise.<Object>}
 	 */
 	async create(user) {
-		const hasUser = await this.get(user.id);
-
-		if (!hasUser) {
-			await this._insert(user);
-		}
+		await this._insert(user);
 
 		return user;
 	}
